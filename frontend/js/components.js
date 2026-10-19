@@ -1,16 +1,11 @@
-/**
- * UI Components & Helpers
- * ThreeUI Modular Patterns for Modals, Toasts, Confirm Dialogs, and Table Rendering
- */
-
 export function escapeHtml(str) {
   if (str === null || str === undefined) return '';
   return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#039;');
 }
 
 export class Toast {
@@ -33,17 +28,17 @@ export class Toast {
     this.init();
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    
-    const icon = type === 'success' 
-      ? '✓' 
-      : type === 'error' 
-      ? '⚠' 
-      : 'ℹ';
-      
+
+    const icon = type === 'success'
+    ? '✓'
+    : type === 'error'
+    ? '⚠'
+    : 'ℹ';
+
     toast.innerHTML = `
-      <span style="font-weight: 800; font-size: 16px;">${icon}</span>
-      <div style="flex: 1; word-break: break-word;">${escapeHtml(message)}</div>
-      <button style="background:none;border:none;color:inherit;cursor:pointer;font-size:16px;" onclick="this.parentElement.remove()">×</button>
+    <span style="font-weight: 800; font-size: 16px;">${icon}</span>
+    <div style="flex: 1; word-break: break-word;">${escapeHtml(message)}</div>
+    <button style="background:none;border:none;color:inherit;cursor:pointer;font-size:16px;" onclick="this.parentElement.remove()">×</button>
     `;
 
     this.container.appendChild(toast);
@@ -81,31 +76,38 @@ export class Modal {
         el = document.createElement('div');
         el.id = 'global-modal';
         el.className = 'modal-overlay';
-        el.innerHTML = `
-          <div class="modal-content" role="dialog" aria-modal="true">
-            <div class="modal-header">
-              <h3 class="modal-title" id="modal-title">Modal Title</h3>
-              <button class="modal-close" id="modal-close-btn" aria-label="Close modal">&times;</button>
-            </div>
-            <div class="modal-body" id="modal-body"></div>
-            <div class="modal-footer" id="modal-footer"></div>
-          </div>
-        `;
         document.body.appendChild(el);
       }
+
+      // FIX: Agar index.html mein global-modal khali hai toh uske andar structure daalo
+      if (!el.querySelector('.modal-content')) {
+        el.innerHTML = `
+        <div class="modal-content" role="dialog" aria-modal="true">
+        <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Modal Title</h3>
+        <button class="modal-close" id="modal-close-btn" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-footer" id="modal-footer"></div>
+        </div>
+        `;
+      }
+
       this.modalEl = el;
 
       // Close handlers
       const closeBtn = el.querySelector('#modal-close-btn');
-      closeBtn.onclick = () => this.close();
+      if (closeBtn) {
+        closeBtn.onclick = () => this.close();
+      }
       el.onclick = (e) => {
         if (e.target === el) this.close();
       };
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && el.classList.contains('open')) {
-          this.close();
-        }
-      });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && el.classList.contains('open')) {
+            this.close();
+          }
+        });
     }
   }
 
@@ -138,6 +140,7 @@ export class Modal {
     });
 
     this.modalEl.classList.add('open');
+    this.modalEl.setAttribute('aria-hidden', 'false');
     if (onRender) {
       onRender(bodyEl);
     }
@@ -146,6 +149,7 @@ export class Modal {
   static close() {
     if (this.modalEl) {
       this.modalEl.classList.remove('open');
+      this.modalEl.setAttribute('aria-hidden', 'true');
     }
   }
 
@@ -153,18 +157,18 @@ export class Modal {
     this.open({
       title,
       bodyHtml: `<p style="font-size: 14px; color: var(--text-primary);">${escapeHtml(message)}</p>`,
-      footerButtons: [
-        { label: 'Cancel', className: 'btn-outline', onClick: () => true },
-        {
-          label: confirmText,
-          className: confirmClass,
-          id: 'btn-confirm-action',
-          onClick: async () => {
-            await onConfirm();
-            return true;
-          },
-        },
-      ],
+              footerButtons: [
+                { label: 'Cancel', className: 'btn-outline', onClick: () => true },
+              {
+                label: confirmText,
+                className: confirmClass,
+                id: 'btn-confirm-action',
+                onClick: async () => {
+                  await onConfirm();
+                  return true;
+                },
+              },
+              ],
     });
   }
 }
