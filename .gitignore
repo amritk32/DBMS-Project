@@ -1,0 +1,20 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+env/
+venv/
+ENV/
+
+# Local databases (except app/library.db if tracked)
+/library.db
+
+# Environment variables
+.env
+
+# OS metadata
+.DS_Store
+Thumbs.db
