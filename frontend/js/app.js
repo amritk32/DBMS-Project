@@ -1,5 +1,5 @@
 /**
- * Main Application Orchestrator & Router
+ * Main Application Orchestrator & Router and frontend logic
  */
 
 import { api } from './api.js';
