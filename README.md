@@ -56,6 +56,18 @@ Open the API documentation:
 - ReDoc: http://127.0.0.1:8000/redoc
 - Health check: http://127.0.0.1:8000/health
 
+## Run the Frontend
+
+Run the frontend development server from the project root:
+
+```bash
+python -m http.server 3000 --directory frontend
+```
+
+Open the frontend workspace in your browser:
+
+- Web Application: http://127.0.0.1:3000
+
 ## Database
 
 The default database URL is:
